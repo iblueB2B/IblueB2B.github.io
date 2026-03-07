@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Manage Orders - Supplier Dashboard | iBlue B2B</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/supplier-orders.css">
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <a href="supplier-dashboard.html" class="logo">
+                <div class="logo-circle">i</div>
+                <span class="logo-text">iBlue<span>B2B</span></span>
+            </a>
+            <button class="menu-btn" id="menuToggle">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>Manage Orders</h1>
+            <p>Track and fulfill customer orders</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-item" onclick="filterOrders('all')">
+                <span class="stat-value" id="totalOrders">0</span>
+                <span class="stat-label">Total</span>
+            </div>
+            <div class="stat-item" onclick="filterOrders('pending')">
+                <span class="stat-value" id="pendingOrders">0</span>
+                <span class="stat-label">Pending</span>
+            </div>
+            <div class="stat-item" onclick="filterOrders('processing')">
+                <span class="stat-value" id="processingOrders">0</span>
+                <span class="stat-label">Processing</span>
+            </div>
+            <div class="stat-item" onclick="filterOrders('shipped')">
+                <span class="stat-value" id="shippedOrders">0</span>
+                <span class="stat-label">Shipped</span>
+            </div>
+            <div class="stat-item" onclick="filterOrders('delivered')">
+                <span class="stat-value" id="deliveredOrders">0</span>
+                <span class="stat-label">Delivered</span>
+            </div>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by order # or buyer...">
+            </div>
+            <button class="filter-btn" id="filterBtn">
+                <i class="fas fa-sliders-h"></i>
+            </button>
+        </div>
+
+        <!-- Filter Panel (Hidden by default) -->
+        <div class="filter-panel" id="filterPanel" style="display: none;">
+            <div class="filter-section">
+                <h4>Order Status</h4>
+                <div class="filter-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="pending" class="status-filter">
+                        <span>Pending</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="processing" class="status-filter">
+                        <span>Processing</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="shipped" class="status-filter">
+                        <span>Shipped</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="delivered" class="status-filter">
+                        <span>Delivered</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="cancelled" class="status-filter">
+                        <span>Cancelled</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="disputed" class="status-filter">
+                        <span>Disputed</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h4>Date Range</h4>
+                <select id="dateRange">
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <h4>Payment Status</h4>
+                <select id="paymentFilter">
+                    <option value="all">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="paid">Paid</option>
+                    <option value="failed">Failed</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="apply-btn" id="applyFilters">Apply</button>
+                <button class="reset-btn" id="resetFilters">Reset</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+            <div class="spinner"></div>
+            <p>Loading orders...</p>
+        </div>
+
+        <!-- Orders List -->
+        <div class="orders-list" id="ordersList">
+            <!-- Populated by JavaScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>No orders found</h3>
+            <p>When customers place orders, they'll appear here</p>
+            <button class="refresh-btn" onclick="loadOrders()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="load-more" id="loadMore" style="display: none;">
+            <button class="load-more-btn" onclick="loadMoreOrders()">
+                Load More Orders
+            </button>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="supplier-dashboard.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="supplier-products.html" class="nav-item">
+            <i class="fas fa-box"></i>
+            <span>Products</span>
+        </a>
+        <a href="supplier-orders.html" class="nav-item active">
+            <i class="fas fa-truck"></i>
+            <span>Orders</span>
+        </a>
+        <a href="supplier-quotations.html" class="nav-item">
+            <i class="fas fa-file-invoice"></i>
+            <span>Quotes</span>
+        </a>
+        <a href="supplier-profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Order Details Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3>Order Details</h3>
+                <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="orderModalBody">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Status Modal -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Order Status</h3>
+                <button class="modal-close" onclick="closeStatusModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="statusForm">
+                    <input type="hidden" id="statusOrderId">
+                    
+                    <div class="form-group">
+                        <label>Order Status</label>
+                        <select id="orderStatus" required>
+                            <option value="">Select status</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="trackingFields" style="display: none;">
+                        <label>Tracking Number</label>
+                        <input type="text" id="trackingNumber" placeholder="e.g., 1Z999AA10123456784">
+                        
+                        <label>Carrier</label>
+                        <select id="carrier">
+                            <option value="">Select carrier</option>
+                            <option value="fedex">FedEx</option>
+                            <option value="ups">UPS</option>
+                            <option value="dhl">DHL</option>
+                            <option value="usps">USPS</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <label>Estimated Delivery</label>
+                        <input type="date" id="estimatedDelivery">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes (Optional)</label>
+                        <textarea id="statusNotes" rows="2" placeholder="Add any notes about this status update..."></textarea>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">Update Status</button>
+                        <button type="button" class="btn-secondary" onclick="closeStatusModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Tracking Modal -->
+    <div class="modal" id="trackingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Tracking Information</h3>
+                <button class="modal-close" onclick="closeTrackingModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="trackingForm">
+                    <input type="hidden" id="trackingOrderId">
+                    
+                    <div class="form-group">
+                        <label>Tracking Number <span class="required">*</span></label>
+                        <input type="text" id="trackingNumberInput" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Carrier</label>
+                        <select id="carrierSelect">
+                            <option value="">Select carrier</option>
+                            <option value="fedex">FedEx</option>
+                            <option value="ups">UPS</option>
+                            <option value="dhl">DHL</option>
+                            <option value="usps">USPS</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estimated Delivery</label>
+                        <input type="date" id="estimatedDeliveryInput">
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">Save Tracking</button>
+                        <button type="button" class="btn-secondary" onclick="closeTrackingModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark as Delivered Modal -->
+    <div class="modal" id="deliveredModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Delivery</h3>
+                <button class="modal-close" onclick="closeDeliveredModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delivery-confirm">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Mark as Delivered</h4>
+                    <p>Are you sure you want to mark this order as delivered?</p>
+                    <p class="warning">The buyer will be notified and asked to confirm delivery.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Delivery Notes (Optional)</label>
+                    <textarea id="deliveryNotes" rows="2" placeholder="Add any delivery notes..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-primary" onclick="confirmDelivered()">Confirm Delivery</button>
+                    <button class="btn-secondary" onclick="closeDeliveredModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancellation Confirmation Modal -->
+    <div class="modal" id="cancelModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cancel Order</h3>
+                <button class="modal-close" onclick="closeCancelModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="cancel-confirm">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Cancel Order</h4>
+                    <p>Are you sure you want to cancel this order?</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Reason for Cancellation</label>
+                    <select id="cancelReason">
+                        <option value="">Select reason</option>
+                        <option value="out_of_stock">Out of Stock</option>
+                        <option value="buyer_request">Buyer Requested</option>
+                        <option value="pricing_issue">Pricing Issue</option>
+                        <option value="shipping_issue">Shipping Issue</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Additional Notes</label>
+                    <textarea id="cancelNotes" rows="2" placeholder="Explain why you're cancelling..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-danger" onclick="confirmCancel()">Yes, Cancel Order</button>
+                    <button class="btn-secondary" onclick="closeCancelModal()">No, Keep Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supplier-orders.js"></script>
+</body>
+</html>

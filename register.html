@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>iBlue B2B - Register as Supplier</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/supplier-register.css">
+</head>
+<body>
+    <div class="card">
+        <div class="logo">
+            <div class="logo-circle">i</div>
+            <div style="flex: 1;">
+                <h1>Become a Supplier <span class="badge">B2B</span></h1>
+                <div class="subtitle">Join Uganda's fastest growing B2B marketplace</div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-line">
+                <div class="progress-fill" id="progressFill" style="width: 50%"></div>
+            </div>
+            <div class="progress-bar">
+                <span class="progress-step active" id="step1Label">Business Info</span>
+                <span class="progress-step" id="step2Label">Verification</span>
+            </div>
+        </div>
+
+        <!-- Step 1: Business Information -->
+        <div class="step active" id="step1">
+            <form id="businessInfoForm">
+                <div class="form-group">
+                    <label class="form-label required">Business Email</label>
+                    <input type="email" class="form-input" id="businessEmail" placeholder="contact@yourbusiness.com">
+                    <div class="error-message" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">Business Name</label>
+                    <input type="text" class="form-input" id="businessName" placeholder="Your registered business name">
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label class="form-label required">Phone Number</label>
+                        <input type="tel" class="form-input" id="phone" placeholder="0772 123456">
+                        <div class="hint">Ugandan phone number</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Alternative Phone</label>
+                        <input type="tel" class="form-input" id="altPhone" placeholder="Optional">
+                    </div>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label class="form-label required">Business Type</label>
+                        <select class="form-select" id="businessType">
+                            <option value="">Select business type</option>
+                            <option value="Manufacturer">Manufacturer</option>
+                            <option value="Wholesaler">Wholesaler</option>
+                            <option value="Distributor">Distributor</option>
+                            <option value="Exporter">Exporter</option>
+                            <option value="Importer">Importer</option>
+                            <option value="Retailer (Bulk)">Retailer (Bulk)</option>
+                            <option value="Service Provider">Service Provider</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Year Established</label>
+                        <input type="number" class="form-input" id="yearEstablished" placeholder="2020" min="1900" max="2026">
+                    </div>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label class="form-label">Business Registration No.</label>
+                        <input type="text" class="form-input" id="businessReg" placeholder="Optional">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">TIN Number</label>
+                        <input type="text" class="form-input" id="tinNumber" placeholder="Tax ID (Optional)">
+                    </div>
+                </div>
+
+                <!-- Dynamic Location Fields -->
+                <div class="form-group">
+                    <label class="form-label required">Region</label>
+                    <select class="form-select" id="region" required>
+                        <option value="">Select region</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">District</label>
+                    <select class="form-select" id="district" required disabled>
+                        <option value="">First select a region</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">County/Municipality (Optional)</label>
+                    <select class="form-select" id="county" disabled>
+                        <option value="">First select a district</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">Warehouse/Business Location</label>
+                    <textarea class="form-textarea" id="warehouseLocation" rows="2" placeholder="Street address, building, landmark"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">Service Areas</label>
+                    <select class="form-select" id="serviceAreas" multiple size="3">
+                        <!-- Populated by JS -->
+                    </select>
+                    <div class="hint">Hold Ctrl/Cmd to select multiple</div>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label class="form-label">Minimum Order Value (UGX)</label>
+                        <input type="number" class="form-input" id="minOrderValue" placeholder="0" min="0" step="1000">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Delivery Options</label>
+                        <select class="form-select" id="deliveryOptions" multiple size="2">
+                            <option value="pickup">Buyer Pickup</option>
+                            <option value="supplier_delivery">Supplier Delivery</option>
+                            <option value="third_party">Third Party Logistics</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="acceptTerms" required>
+                    <label for="acceptTerms">I confirm that the information provided is accurate and I agree to the <a href="terms-conditions.html" target="_blank" style="color: var(--primary);">Terms of Service</a></label>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-primary" id="nextToStep2" style="flex: 1;">Continue to Verification →</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 2: Verification (No File Upload) -->
+        <div class="step" id="step2">
+            <form id="verificationForm">
+                <div class="verification-badge">
+                    <div class="verification-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="verification-text">
+                        <h3>Location Verification</h3>
+                        <p>Confirm your business location details</p>
+                    </div>
+                </div>
+
+                <!-- Location Summary Card -->
+                <div class="location-summary" id="locationSummary">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">Business Contact Person</label>
+                    <input type="text" class="form-input" id="contactPerson" placeholder="Full name of contact person" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">Verification Phone Number</label>
+                    <input type="tel" class="form-input" id="verificationPhone" placeholder="Phone number for verification call" required>
+                    <div class="hint">We'll call this number to verify your business</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Preferred Call Time</label>
+                    <select class="form-select" id="callTime">
+                        <option value="morning">Morning (9AM - 12PM)</option>
+                        <option value="afternoon">Afternoon (12PM - 3PM)</option>
+                        <option value="late_afternoon">Late Afternoon (3PM - 6PM)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Additional Notes</label>
+                    <textarea class="form-textarea" id="verificationNotes" rows="3" placeholder="Any additional information for the verification team..."></textarea>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="verifyAccuracy" required>
+                    <label for="verifyAccuracy">I confirm that all business information provided is accurate and I authorize verification of these details</label>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" id="backToStep1">← Back</button>
+                    <button type="button" class="btn btn-primary" id="submitVerification" style="flex: 1;">Submit for Verification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Application Submitted!</h2>
+            <p>Your supplier application has been submitted successfully.</p>
+            <p class="thank-you-message">Our team will verify your business within 24-48 hours.</p>
+            <div class="modal-actions">
+                <a href="supplier-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+                <a href="index.html" class="btn btn-secondary">Browse Marketplace</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p id="loadingMessage">Processing...</p>
+    </div>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/supplier-register.js"></script>
+</body>
+</html>
