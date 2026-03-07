@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iBlue B2B - Uganda's Business Marketplace</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">i</span>
+                <span class="logo-text">blue<span>B2B</span></span>
+            </div>
+            
+            <div class="header-right">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <a href="#" class="nav-tab active">Products</a>
+        <a href="suppliers.html" class="nav-tab">Suppliers</a>
+        <a href="discover.html" class="nav-tab">Discover</a>
+    </div>
+
+    <!-- Banners Carousel -->
+    <div class="swiper banner-swiper">
+        <div class="swiper-wrapper" id="bannerWrapper">
+            <!-- Banners loaded from database -->
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- Quick Actions Carousel -->
+    <div class="quick-actions-section">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="swiper quick-actions-swiper">
+            <div class="swiper-wrapper" id="quickActionsWrapper">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Deals Carousel -->
+    <div class="featured-deals-section">
+        <div class="section-header">
+            <h2 class="section-title">Featured Deals</h2>
+            <a href="featured-deals.html" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="swiper deals-swiper">
+            <div class="swiper-wrapper" id="featuredDealsWrapper">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Explore Categories Carousel -->
+    <div class="categories-section">
+        <div class="section-header">
+            <h2 class="section-title">Explore Categories</h2>
+            <a href="categories.html" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="swiper categories-swiper">
+            <div class="swiper-wrapper" id="categoriesWrapper">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Hot Suppliers Carousel -->
+    <div class="hot-suppliers-section">
+        <div class="section-header">
+            <h2 class="section-title">Hot Suppliers</h2>
+            <a href="suppliers.html" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="swiper suppliers-swiper">
+            <div class="swiper-wrapper" id="hotSuppliersWrapper">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Product Sections -->
+    <div id="categoryProductSections"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="suppliers.html" class="nav-item">
+            <i class="fas fa-warehouse"></i>
+            <span>Suppliers</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+            <i class="fas fa-comment"></i>
+            <span>Messenger</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>My iBlue</span>
+        </a>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>

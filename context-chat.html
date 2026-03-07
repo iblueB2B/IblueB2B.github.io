@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Business Chat - iBlue B2B</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Emoji Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-mart@latest/css/emoji-mart.css">
+    
+    <style>
+        :root {
+            --primary: #0B4F6C;
+            --primary-dark: #083b4f;
+            --primary-light: #1a6b8a;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --dark: #1F2937;
+            --gray-800: #1F2937;
+            --gray-700: #374151;
+            --gray-600: #4B5563;
+            --gray-500: #6B7280;
+            --gray-400: #9CA3AF;
+            --gray-300: #D1D5DB;
+            --gray-200: #E5E7EB;
+            --gray-100: #F3F4F6;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--gray-100);
+            color: var(--dark);
+            line-height: 1.4;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            z-index: 1000;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            height: 60px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--gray-600);
+            cursor: pointer;
+            padding: 8px;
+            margin: -8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover {
+            color: var(--primary);
+        }
+
+        .header-title {
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-title h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 2px;
+        }
+
+        .context-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .context-badge.inquiry {
+            background: #EFF6FF;
+            color: var(--primary);
+        }
+
+        .context-badge.quote {
+            background: #E7F5E8;
+            color: var(--secondary);
+        }
+
+        .context-badge.order {
+            background: #FFF3E0;
+            color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: none;
+            border: none;
+            color: var(--gray-600);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-icon:hover {
+            background: var(--gray-100);
+            color: var(--primary);
+        }
+
+        /* Context Bar */
+        .context-bar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .context-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .context-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .context-details h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .context-details p {
+            font-size: 13px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .context-details span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .context-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .context-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .context-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .context-btn.primary {
+            background: var(--secondary);
+        }
+
+        .context-btn.danger {
+            background: var(--danger);
+        }
+
+        /* Main Content */
+        .main-content {
+            position: fixed;
+            top: 170px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Messages Container */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: var(--gray-50);
+        }
+
+        .message-date-divider {
+            text-align: center;
+            margin: 16px 0 8px;
+        }
+
+        .date-divider-text {
+            background: var(--gray-100);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--gray-500);
+            display: inline-block;
+        }
+
+        .message-wrapper {
+            display: flex;
+            margin-bottom: 4px;
+        }
+
+        .message-wrapper.own-message {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message-wrapper:not(.own-message) .message-bubble {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-wrapper.own-message .message-bubble {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+
+        .message-text a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        .message-attachment {
+            margin-top: 8px;
+            border-radius: 12px;
+            overflow: hidden;
+            max-width: 250px;
+        }
+
+        .attachment-image {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .attachment-file {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 8px;
+            color: var(--dark);
+            text-decoration: none;
+        }
+
+        .own-message .attachment-file {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .attachment-file i {
+            font-size: 20px;
+        }
+
+        .attachment-info {
+            flex: 1;
+        }
+
+        .attachment-name {
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .attachment-size {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.7;
+            text-align: right;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+        }
+
+        .message-time i {
+            font-size: 12px;
+        }
+
+        .message-time .read {
+            color: var(--secondary);
+        }
+
+        /* Context Message */
+        .context-message {
+            background: #EFF6FF;
+            border-left: 3px solid var(--primary);
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .context-message.quote {
+            background: #E7F5E8;
+            border-left-color: var(--secondary);
+        }
+
+        .context-message.order {
+            background: #FFF3E0;
+            border-left-color: var(--accent);
+        }
+
+        .context-message-content {
+            flex: 1;
+        }
+
+        .context-message-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .context-message-details {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+
+        .context-message-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .context-message-btn {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .context-message-btn.accept {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .context-message-btn.view {
+            background: var(--white);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--white);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: var(--gray-400);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            30% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--white);
+            border-top: 1px solid var(--gray-200);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .quick-actions::-webkit-scrollbar {
+            display: none;
+        }
+
+        .quick-action-btn {
+            padding: 8px 16px;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray-700);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .quick-action-btn:hover {
+            background: #EFF6FF;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .quick-action-btn i {
+            font-size: 12px;
+        }
+
+        /* Message Input Area */
+        .message-input-area {
+            background: var(--white);
+            border-top: 1px solid var(--gray-200);
+            padding: 12px 16px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        }
+
+        .attachment-preview {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .preview-file {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .preview-file i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .preview-info {
+            flex: 1;
+        }
+
+        .preview-name {
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-size {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .remove-attachment {
+            color: var(--danger);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 16px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            background: var(--gray-100);
+            border-radius: 24px;
+            padding: 4px 4px 4px 16px;
+        }
+
+        .input-tools {
+            display: flex;
+            gap: 4px;
+        }
+
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--gray-600);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .tool-btn:hover {
+            background: var(--gray-200);
+            color: var(--primary);
+        }
+
+        .text-input-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-input-wrapper textarea {
+            width: 100%;
+            border: none;
+            background: transparent;
+            resize: none;
+            max-height: 120px;
+            padding: 10px 0;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .text-input-wrapper textarea:focus {
+            outline: none;
+        }
+
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .send-btn:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-content.modal-lg {
+            max-width: 700px;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray-500);
+            padding: 4px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--gray-100);
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* Counter Offer Form */
+        .counter-offer-item {
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .counter-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .counter-item-name {
+            font-weight: 600;
+        }
+
+        .counter-item-original {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .counter-item-original span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .counter-price-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .counter-price-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+        }
+
+        .counter-price-input span {
+            color: var(--gray-500);
+        }
+
+        .counter-summary {
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--gray-300);
+        }
+
+        .summary-row.total {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--gray-700);
+        }
+
+        .form-group .required {
+            color: var(--danger);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Modal Actions */
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 12px;
+            background: var(--white);
+            color: var(--gray-600);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+
+        .btn-success {
+            flex: 1;
+            padding: 12px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            flex: 1;
+            padding: 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Accept Modal */
+        .selected-quote-summary {
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .terms-checkbox {
+            margin: 16px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-500);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            text-align: center;
+            z-index: 3000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Emoji Picker */
+        .emoji-picker {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            z-index: 1500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .context-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .context-info {
+                width: 100%;
+            }
+            
+            .context-actions {
+                width: 100%;
+            }
+            
+            .context-btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .message-bubble {
+                max-width: 85%;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .context-details p {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            
+            .quick-actions {
+                flex-wrap: wrap;
+            }
+            
+            .quick-action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+        <div class="header-top">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            
+            <div class="header-title">
+                <h1 id="chatTitle">Business Chat</h1>
+                <span class="context-badge" id="contextBadge"></span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="header-icon" id="menuBtn">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Context Bar -->
+        <div class="context-bar" id="contextBar">
+            <!-- Populated by JS -->
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Messages Container -->
+        <div class="messages-container" id="messagesContainer">
+            <div class="loading" id="loadingState">
+                <div class="loading-spinner"></div>
+                <p>Loading conversation...</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions (Role-based) -->
+        <div class="quick-actions" id="quickActions" style="display: none;">
+            <!-- Populated by JS -->
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="typing-text">Someone is typing...</span>
+        </div>
+
+        <!-- Message Input Area -->
+        <div class="message-input-area" id="messageInputArea">
+            <!-- Attachment Preview -->
+            <div class="attachment-preview" id="attachmentPreview" style="display: none;"></div>
+
+            <div class="input-wrapper">
+                <div class="input-tools">
+                    <button class="tool-btn" id="attachFileBtn" title="Attach file">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <button class="tool-btn" id="emojiBtn" title="Add emoji">
+                        <i class="far fa-smile"></i>
+                    </button>
+                </div>
+                
+                <div class="text-input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="Type a message..." 
+                        rows="1"
+                    ></textarea>
+                </div>
+                
+                <button class="send-btn" id="sendMessageBtn" disabled>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Menu Modal -->
+    <div class="modal" id="menuModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Options</h3>
+                <button class="modal-close" onclick="closeMenuModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="options-list" id="menuOptions">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Counter Offer Modal -->
+    <div class="modal" id="counterOfferModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3>Make Counter Offer</h3>
+                <button class="modal-close" onclick="closeCounterOfferModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="counterOfferForm"></div>
+                
+                <div class="counter-summary" id="counterOfferSummary"></div>
+                
+                <div class="form-group">
+                    <label>Message (Optional)</label>
+                    <textarea id="counterMessage" rows="3" placeholder="Explain your counter offer..."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn-primary" id="sendCounterBtn">Send Counter Offer</button>
+                    <button class="btn-secondary" onclick="closeCounterOfferModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accept Quote Modal -->
+    <div class="modal" id="acceptQuoteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Accept Quotation</h3>
+                <button class="modal-close" onclick="closeAcceptQuoteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="selected-quote-summary" id="acceptQuoteSummary"></div>
+                
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="acceptTerms">
+                    <label for="acceptTerms">I confirm that I want to accept this quotation and proceed to create a purchase order</label>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn-success" id="confirmAcceptBtn" disabled>Confirm & Create Order</button>
+                    <button class="btn-secondary" onclick="closeAcceptQuoteModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Revision Modal -->
+    <div class="modal" id="revisionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Request Revision</h3>
+                <button class="modal-close" onclick="closeRevisionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>What changes would you like to request?</p>
+                
+                <div class="form-group">
+                    <select id="revisionType" class="form-control">
+                        <option value="price">Price adjustment</option>
+                        <option value="quantity">Quantity change</option>
+                        <option value="terms">Terms modification</option>
+                        <option value="delivery">Delivery timeline</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Details</label>
+                    <textarea id="revisionDetails" rows="4" placeholder="Please explain the changes you need..."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn-primary" id="sendRevisionBtn">Send Request</button>
+                    <button class="btn-secondary" onclick="closeRevisionModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delivery Modal -->
+    <div class="modal" id="confirmDeliveryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Delivery</h3>
+                <button class="modal-close" onclick="closeConfirmDeliveryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Have you received all items in good condition?</p>
+                
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="itemsDamaged">
+                        <span>Some items were damaged</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="itemsMissing">
+                        <span>Some items are missing</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="itemsWrong">
+                        <span>Wrong items received</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>Notes (Optional)</label>
+                    <textarea id="deliveryNotes" rows="3" placeholder="Describe any issues..."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn-success" id="confirmDeliveryBtn">Confirm Delivery</button>
+                    <button class="btn-secondary" onclick="closeConfirmDeliveryModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Tracking Modal -->
+    <div class="modal" id="trackingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Tracking Information</h3>
+                <button class="modal-close" onclick="closeTrackingModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tracking Number</label>
+                    <input type="text" id="trackingNumber" placeholder="e.g., 1Z999AA10123456784">
+                </div>
+                
+                <div class="form-group">
+                    <label>Carrier</label>
+                    <select id="carrier">
+                        <option value="">Select carrier</option>
+                        <option value="fedex">FedEx</option>
+                        <option value="ups">UPS</option>
+                        <option value="dhl">DHL</option>
+                        <option value="usps">USPS</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Estimated Delivery</label>
+                    <input type="date" id="estimatedDelivery">
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn-primary" id="saveTrackingBtn">Update Tracking</button>
+                    <button class="btn-secondary" onclick="closeTrackingModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Success</h3>
+                <button class="modal-close" onclick="closeSuccessModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage">Action completed successfully</p>
+                <div class="modal-actions">
+                    <button class="btn-primary" onclick="closeSuccessModal()">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emoji Picker -->
+    <div class="emoji-picker" id="emojiPicker" style="display: none;"></div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/emoji-mart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="js/context-chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Messages - iBlue B2B Chat</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/chat.css">
+    
+    <style>
+        /* Additional styles for better integration */
+        .new-message-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-500);
+        }
+        
+        .welcome-message i {
+            font-size: 64px;
+            color: var(--gray-300);
+            margin-bottom: 16px;
+        }
+        
+        .welcome-message h3 {
+            font-size: 20px;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+        
+        .welcome-message p {
+            margin-bottom: 24px;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .action-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        
+        .action-card i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        
+        .action-card span {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .action-card small {
+            display: block;
+            color: var(--gray-500);
+            font-size: 11px;
+        }
+        
+        @media (max-width: 480px) {
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+        <div class="header-top">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <div class="logo-circle">i</div>
+                <span class="logo-text">iBlue<span>B2B</span></span>
+            </a>
+            <div class="header-actions">
+                <button class="header-icon" id="newChatBtn" title="New Message">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <a href="notifications.html" class="header-icon">
+                    <i class="far fa-bell"></i>
+                    <span class="badge" id="notificationBadge">0</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="chatSearch" placeholder="Search messages or contacts...">
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="chat-container">
+            <!-- Conversations Sidebar -->
+            <div class="conversations-sidebar" id="conversationsSidebar">
+                <div class="sidebar-header">
+                    <h3>Messages</h3>
+                    <button class="btn-icon" id="filterConversations" title="Filter conversations">
+                        <i class="fas fa-sliders-h"></i>
+                    </button>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="unread">Unread</button>
+                    <button class="filter-btn" data-filter="inquiry">Inquiries</button>
+                    <button class="filter-btn" data-filter="quote">Quotes</button>
+                    <button class="filter-btn" data-filter="order">Orders</button>
+                </div>
+
+                <!-- Conversations List -->
+                <div class="conversations-list" id="conversationsList">
+                    <div class="welcome-message">
+                        <i class="fas fa-comments"></i>
+                        <h3>Welcome to Messages</h3>
+                        <p>Start a conversation with suppliers or buyers</p>
+                        <button class="btn-primary" id="emptyStateNewChat">
+                            <i class="fas fa-plus"></i> New Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-area" id="chatArea">
+                <!-- Empty State -->
+                <div class="chat-empty-state" id="chatEmptyState">
+                    <i class="fas fa-comments"></i>
+                    <h3>Your Messages</h3>
+                    <p>Select a conversation to start chatting or create a new one</p>
+                    <div class="action-grid">
+                        <a href="new-message.html?tab=direct" class="action-card">
+                            <i class="fas fa-user"></i>
+                            <span>Direct Message</span>
+                            <small>Chat with any user</small>
+                        </a>
+                        <a href="new-message.html?tab=inquiry" class="action-card">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>From Inquiry</span>
+                            <small>Discuss an inquiry</small>
+                        </a>
+                        <a href="new-message.html?tab=quote" class="action-card">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>From Quote</span>
+                            <small>Negotiate quotes</small>
+                        </a>
+                        <a href="new-message.html?tab=order" class="action-card">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>From Order</span>
+                            <small>Track orders</small>
+                        </a>
+                        <a href="send-inquiry.html" class="action-card">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>New Inquiry</span>
+                            <small>Create inquiry</small>
+                        </a>
+                        <a href="suppliers.html" class="action-card">
+                            <i class="fas fa-warehouse"></i>
+                            <span>Find Suppliers</span>
+                            <small>Browse suppliers</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Active Conversation -->
+                <div class="active-conversation" id="activeConversation" style="display: none;">
+                    <!-- Conversation Header -->
+                    <div class="conversation-header">
+                        <div class="participant-info" id="participantInfo"></div>
+                        <div class="conversation-actions">
+                            <button class="btn-icon" id="viewParticipantProfile" title="View Profile">
+                                <i class="fas fa-user"></i>
+                            </button>
+                            <button class="btn-icon" id="conversationMenu" title="More options">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Context Banner -->
+                    <div class="context-banner" id="contextBanner" style="display: none;"></div>
+
+                    <!-- Messages Container -->
+                    <div class="messages-container" id="messagesContainer">
+                        <div class="messages-loading" id="messagesLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+
+                    <!-- Typing Indicator -->
+                    <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="typing-text">Someone is typing...</span>
+                    </div>
+
+                    <!-- Message Input Area -->
+                    <div class="message-input-area">
+                        <div class="input-tools">
+                            <button class="tool-btn" id="attachFileBtn" title="Attach file">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button class="tool-btn" id="emojiBtn" title="Add emoji">
+                                <i class="far fa-smile"></i>
+                            </button>
+                            <button class="tool-btn" id="templateBtn" title="Quick responses">
+                                <i class="fas fa-file-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="input-wrapper">
+                            <textarea 
+                                id="messageInput" 
+                                placeholder="Type a message..." 
+                                rows="1"
+                            ></textarea>
+                            <button class="send-btn" id="sendMessageBtn" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+
+                        <!-- Attachment Preview -->
+                        <div class="attachment-preview" id="attachmentPreview" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="suppliers.html" class="nav-item">
+            <i class="fas fa-warehouse"></i>
+            <span>Suppliers</span>
+        </a>
+        <a href="my-inquiries.html" class="nav-item">
+            <i class="fas fa-file-invoice"></i>
+            <span>Inquiries</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Orders</span>
+        </a>
+        <a href="chat.html" class="nav-item active">
+            <i class="fas fa-comment"></i>
+            <span>Chat</span>
+        </a>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>

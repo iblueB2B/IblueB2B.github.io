@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Message Templates - iBlue B2B</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/message-templates.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+        <div class="header-top">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <div class="logo-circle">i</div>
+                <span class="logo-text">iBlue<span>B2B</span></span>
+            </a>
+            <div class="header-actions">
+                <button class="header-icon" id="newTemplateBtn">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <a href="notifications.html" class="header-icon">
+                    <i class="far fa-bell"></i>
+                    <span class="badge" id="notificationBadge">3</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>Message Templates</h1>
+            <p class="subtitle">Create and manage quick responses for faster communication</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="my-templates">My Templates</button>
+            <button class="tab-btn" data-tab="global-templates">Global Templates</button>
+            <button class="tab-btn" data-tab="favorites">Favorites</button>
+            <button class="tab-btn" data-tab="categories">Categories</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Loading templates...</p>
+        </div>
+
+        <!-- My Templates Tab -->
+        <div class="tab-content active" id="my-templates">
+            <!-- Search and Filter Bar -->
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchMyTemplates" placeholder="Search your templates...">
+                </div>
+                <div class="filter-dropdown">
+                    <select id="filterMyCategory">
+                        <option value="">All Categories</option>
+                        <option value="greeting">Greetings</option>
+                        <option value="price">Price Quotes</option>
+                        <option value="shipping">Shipping</option>
+                        <option value="payment">Payment</option>
+                        <option value="quality">Quality</option>
+                        <option value="negotiation">Negotiation</option>
+                        <option value="closing">Closing</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button class="btn-sort" id="sortMyTemplates">
+                    <i class="fas fa-sort-amount-down"></i> Most Used
+                </button>
+            </div>
+
+            <!-- Templates Grid -->
+            <div class="templates-grid" id="myTemplatesGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="myTemplatesEmpty" style="display: none;">
+                <i class="fas fa-file-alt"></i>
+                <h3>No templates yet</h3>
+                <p>Create your first template to speed up your responses</p>
+                <button class="btn-primary" onclick="showCreateTemplateModal()">
+                    <i class="fas fa-plus"></i> Create Template
+                </button>
+            </div>
+        </div>
+
+        <!-- Global Templates Tab -->
+        <div class="tab-content" id="global-templates">
+            <!-- Search and Filter Bar -->
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchGlobalTemplates" placeholder="Search global templates...">
+                </div>
+                <div class="filter-dropdown">
+                    <select id="filterGlobalCategory">
+                        <option value="">All Categories</option>
+                        <option value="greeting">Greetings</option>
+                        <option value="price">Price Quotes</option>
+                        <option value="shipping">Shipping</option>
+                        <option value="payment">Payment</option>
+                        <option value="quality">Quality</option>
+                        <option value="negotiation">Negotiation</option>
+                        <option value="closing">Closing</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button class="btn-sort" id="sortGlobalTemplates">
+                    <i class="fas fa-sort-amount-down"></i> Most Used
+                </button>
+            </div>
+
+            <!-- Templates Grid -->
+            <div class="templates-grid" id="globalTemplatesGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Favorites Tab -->
+        <div class="tab-content" id="favorites">
+            <!-- Templates Grid -->
+            <div class="templates-grid" id="favoritesGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="favoritesEmpty" style="display: none;">
+                <i class="far fa-star"></i>
+                <h3>No favorites yet</h3>
+                <p>Star your most-used templates to access them quickly</p>
+            </div>
+        </div>
+
+        <!-- Categories Tab -->
+        <div class="tab-content" id="categories">
+            <div class="categories-management">
+                <!-- Category Stats -->
+                <div class="category-stats">
+                    <div class="stat-card">
+                        <span class="stat-value" id="totalTemplates">0</span>
+                        <span class="stat-label">Total Templates</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="totalCategories">0</span>
+                        <span class="stat-label">Categories</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="mostUsedCategory">-</span>
+                        <span class="stat-label">Most Used</span>
+                    </div>
+                </div>
+
+                <!-- Category List -->
+                <div class="category-list">
+                    <h3>Categories</h3>
+                    <div class="category-items" id="categoryItems">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Usage Analytics -->
+                <div class="usage-analytics">
+                    <h3>Usage Analytics</h3>
+                    <div class="analytics-chart" id="usageChart">
+                        <!-- Simple bar chart representation -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create/Edit Template Modal -->
+    <div class="modal" id="templateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Create New Template</h3>
+                <button class="modal-close" onclick="closeTemplateModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="templateForm" onsubmit="event.preventDefault(); saveTemplate();">
+                    <div class="form-group">
+                        <label for="templateTitle">Template Title <span class="required">*</span></label>
+                        <input type="text" id="templateTitle" placeholder="e.g., Price Inquiry Response" maxlength="100" required>
+                        <small class="char-counter"><span id="titleCharCount">0</span>/100</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="templateCategory">Category <span class="required">*</span></label>
+                        <select id="templateCategory" required>
+                            <option value="">Select a category</option>
+                            <option value="greeting">Greeting & Introduction</option>
+                            <option value="price">Price Quote</option>
+                            <option value="shipping">Shipping & Delivery</option>
+                            <option value="payment">Payment Terms</option>
+                            <option value="quality">Quality & Specifications</option>
+                            <option value="negotiation">Negotiation</option>
+                            <option value="closing">Closing & Confirmation</option>
+                            <option value="followup">Follow-up</option>
+                            <option value="support">Customer Support</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="templateContent">Template Content <span class="required">*</span></label>
+                        <textarea id="templateContent" rows="6" placeholder="Write your template message here..." maxlength="1000" required></textarea>
+                        <small class="char-counter"><span id="contentCharCount">0</span>/1000</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="templateIsFavorite">
+                                <span>Mark as favorite</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Variable Insertion -->
+                    <div class="variables-section">
+                        <label>Insert Variables:</label>
+                        <div class="variable-buttons">
+                            <button type="button" class="variable-btn" onclick="insertVariable('{buyer_name}')">
+                                <i class="fas fa-user"></i> Buyer Name
+                            </button>
+                            <button type="button" class="variable-btn" onclick="insertVariable('{company_name}')">
+                                <i class="fas fa-building"></i> Company Name
+                            </button>
+                            <button type="button" class="variable-btn" onclick="insertVariable('{product_name}')">
+                                <i class="fas fa-box"></i> Product Name
+                            </button>
+                            <button type="button" class="variable-btn" onclick="insertVariable('{inquiry_number}')">
+                                <i class="fas fa-hashtag"></i> Inquiry #
+                            </button>
+                            <button type="button" class="variable-btn" onclick="insertVariable('{quote_number}')">
+                                <i class="fas fa-file-invoice"></i> Quote #
+                            </button>
+                            <button type="button" class="variable-btn" onclick="insertVariable('{order_number}')">
+                                <i class="fas fa-clipboard-list"></i> Order #
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="preview-section">
+                        <label>Preview:</label>
+                        <div class="preview-box" id="templatePreview">
+                            Your message will appear here...
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary" id="saveTemplateBtn">Save Template</button>
+                        <button type="button" class="btn-secondary" onclick="closeTemplateModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Template</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <p class="delete-message">Are you sure you want to delete "<span id="deleteTemplateName"></span>"?</p>
+                <p class="delete-warning">This action cannot be undone.</p>
+                
+                <div class="modal-actions">
+                    <button class="btn-danger" id="confirmDeleteBtn">Delete</button>
+                    <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Templates Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Import Templates</h3>
+                <button class="modal-close" onclick="closeImportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="import-options">
+                    <div class="import-option">
+                        <i class="fas fa-file-import"></i>
+                        <h4>Import from File</h4>
+                        <p>Upload a CSV or JSON file with your templates</p>
+                        <div class="file-upload-area" id="importFileArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to browse or drag and drop</p>
+                            <small>Supports .csv, .json (Max 2MB)</small>
+                            <input type="file" id="importFile" accept=".csv,.json" style="display: none;">
+                        </div>
+                    </div>
+                    
+                    <div class="import-divider">
+                        <span>OR</span>
+                    </div>
+                    
+                    <div class="import-option">
+                        <i class="fas fa-copy"></i>
+                        <h4>Copy from Global</h4>
+                        <p>Add global templates to your collection</p>
+                        <button class="btn-secondary" onclick="showGlobalTemplatesToCopy()">
+                            Browse Global Templates
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Usage Stats Modal -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Template Usage Statistics</h3>
+                <button class="modal-close" onclick="closeStatsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="stats-container" id="templateStats">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Templates Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Export Templates</h3>
+                <button class="modal-close" onclick="closeExportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Choose export format:</p>
+                
+                <div class="export-options">
+                    <button class="export-option" onclick="exportTemplates('csv')">
+                        <i class="fas fa-file-csv"></i>
+                        <span>CSV File</span>
+                        <small>Compatible with Excel</small>
+                    </button>
+                    
+                    <button class="export-option" onclick="exportTemplates('json')">
+                        <i class="fas fa-file-code"></i>
+                        <span>JSON File</span>
+                        <small>For backup or import</small>
+                    </button>
+                    
+                    <button class="export-option" onclick="exportTemplates('pdf')">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>PDF Document</span>
+                        <small>Printable format</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="suppliers.html" class="nav-item">
+            <i class="fas fa-warehouse"></i>
+            <span>Suppliers</span>
+        </a>
+        <a href="my-inquiries.html" class="nav-item">
+            <i class="fas fa-file-invoice"></i>
+            <span>Inquiries</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Orders</span>
+        </a>
+        <a href="chat.html" class="nav-item active">
+            <i class="fas fa-comment"></i>
+            <span>Chat</span>
+        </a>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="js/message-templates.js"></script>
+</body>
+</html>
