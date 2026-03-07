@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Discover Categories | iBlue B2B</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style/admin-discover.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-store"></i> iBlue B2B Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="admin-products.html" class="nav-item">
+                    <i class="fas fa-box"></i> Products
+                </a>
+                <a href="admin-orders.html" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i> Orders
+                </a>
+                <a href="admin-suppliers.html" class="nav-item">
+                    <i class="fas fa-truck"></i> Suppliers
+                </a>
+                <a href="admin-categories.html" class="nav-item">
+                    <i class="fas fa-tags"></i> Categories
+                </a>
+                <a href="admin-discover.html" class="nav-item active">
+                    <i class="fas fa-magic"></i> Discover
+                </a>
+                <a href="admin-spotlights.html" class="nav-item">
+                    <i class="fas fa-star"></i> Spotlights
+                </a>
+                <a href="admin-banners.html" class="nav-item">
+                    <i class="fas fa-images"></i> Banners
+                </a>
+                <a href="admin-reports.html" class="nav-item">
+                    <i class="fas fa-flag"></i> Reports
+                </a>
+                <a href="admin-users.html" class="nav-item">
+                    <i class="fas fa-users"></i> Users
+                </a>
+                <a href="admin-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <hr>
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-arrow-left"></i> Back to Site
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="content-header">
+                <div class="header-title">
+                    <h1>Discover Category Management</h1>
+                    <p>Configure conducive display fields - taglines, icons, and colors</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="window.DiscoverAdmin.exportConduciveData()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn btn-primary" onclick="window.DiscoverAdmin.bulkGenerate()">
+                        <i class="fas fa-magic"></i> Auto-Generate All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Categories</h3>
+                        <div class="stat-number" id="totalCategories">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>With Taglines</h3>
+                        <div class="stat-number" id="withTaglines">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-quote-right"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>With Icons</h3>
+                        <div class="stat-number" id="withIcons">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-icons"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>With Colors</h3>
+                        <div class="stat-number" id="withColors">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" id="searchInput" placeholder="Search by category name...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Conducive Status</label>
+                        <select id="statusFilter">
+                            <option value="all">All Categories</option>
+                            <option value="complete">Complete (Tagline + Icon + Color)</option>
+                            <option value="partial">Partial</option>
+                            <option value="missing">Missing Conducive Fields</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-outline" onclick="window.DiscoverAdmin.resetFilters()">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                    <button class="btn btn-primary" onclick="window.DiscoverAdmin.applyFilters()">
+                        <i class="fas fa-search"></i> Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="categories-grid" id="categoriesGrid">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <div>Loading categories...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Conducive Modal -->
+    <div class="modal" id="conduciveModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Conducive Fields</h3>
+                <button class="modal-close" onclick="window.DiscoverAdmin.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="conduciveForm">
+                    <input type="hidden" id="categoryId">
+
+                    <!-- Category Info -->
+                    <div class="category-info-header" id="modalCategoryInfo">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                    <!-- Live Preview -->
+                    <div class="preview-section">
+                        <label>Live Preview</label>
+                        <div class="live-preview" id="livePreview">
+                            <div class="preview-card">
+                                <div class="preview-icon" id="previewIcon">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <div class="preview-text">
+                                    <h3 id="previewTitle">Category Name</h3>
+                                    <p id="previewTagline">Your tagline will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conducive Tagline -->
+                    <div class="form-group">
+                        <label>Conducive Tagline</label>
+                        <textarea id="conduciveTagline" rows="2" 
+                                  placeholder="e.g., Discover the latest in technology and innovation"
+                                  oninput="window.DiscoverAdmin.updatePreview()"></textarea>
+                        <small>Maximum 100 characters. This appears under the category name.</small>
+                    </div>
+
+                    <!-- Icon Selection -->
+                    <div class="form-group">
+                        <label>Icon</label>
+                        <div class="icon-selector-container">
+                            <input type="text" id="iconInput" placeholder="fa-mobile-alt" value="fa-tag"
+                                   oninput="window.DiscoverAdmin.updatePreview()">
+                            <button type="button" class="btn btn-outline btn-sm" onclick="window.DiscoverAdmin.openIconLibrary()">
+                                <i class="fas fa-icons"></i> Browse Icons
+                            </button>
+                        </div>
+                        <small>Font Awesome icon name (e.g., fa-mobile-alt, fa-laptop, fa-tshirt)</small>
+                    </div>
+
+                    <!-- Quick Icon Picks -->
+                    <div class="icon-quick-picks">
+                        <span class="quick-pick-title">Popular Icons:</span>
+                        <div class="quick-icons">
+                            <span class="quick-icon" onclick="window.DiscoverAdmin.setIcon('fa-mobile-alt')"><i class="fas fa-mobile-alt"></i></span>
+                            <span class="quick-icon" onclick="window.DiscoverAdmin.setIcon('fa-laptop')"><i class="fas fa-laptop"></i></span>
+                            <span class="quick-icon" onclick="window.DiscoverAdmin.setIcon('fa-tshirt')"><i class="fas fa-tshirt"></i></span>
+                            <span class="quick-icon" onclick="window.DiscoverAdmin.setIcon('fa-car')"><i class="fas fa-car"></i></span>
+                            <span class="quick-icon" onclick="window.DiscoverAdmin.setIcon('fa-home')"><i class="fas fa-home"></i></span>
+                            <span class="quick-icon" onclick="window.DiscoverAdmin.setIcon('fa-utensils')"><i class="fas fa-utensils"></i></span>
+                            <span class="quick-icon" onclick="window.DiscoverAdmin.setIcon('fa-book')"><i class="fas fa-book"></i></span>
+                            <span class="quick-icon" onclick="window.DiscoverAdmin.setIcon('fa-camera')"><i class="fas fa-camera"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- Color Selection -->
+                    <div class="form-group">
+                        <label>Brand Color</label>
+                        <div class="color-picker-container">
+                            <input type="color" id="colorPicker" value="#0B4F6C" oninput="window.DiscoverAdmin.updatePreview()">
+                            <input type="text" id="colorInput" value="#0B4F6C" 
+                                   oninput="window.DiscoverAdmin.updateColorFromText(this.value)">
+                        </div>
+                        <small>Choose a brand color for this category</small>
+                    </div>
+
+                    <!-- Quick Color Picks -->
+                    <div class="color-quick-picks">
+                        <span class="quick-pick-title">Quick Colors:</span>
+                        <div class="quick-colors">
+                            <span class="quick-color" style="background: #0B4F6C;" onclick="window.DiscoverAdmin.setColor('#0B4F6C')" title="Primary Blue"></span>
+                            <span class="quick-color" style="background: #10B981;" onclick="window.DiscoverAdmin.setColor('#10B981')" title="Success Green"></span>
+                            <span class="quick-color" style="background: #F59E0B;" onclick="window.DiscoverAdmin.setColor('#F59E0B')" title="Warning Orange"></span>
+                            <span class="quick-color" style="background: #EF4444;" onclick="window.DiscoverAdmin.setColor('#EF4444')" title="Danger Red"></span>
+                            <span class="quick-color" style="background: #8B5CF6;" onclick="window.DiscoverAdmin.setColor('#8B5CF6')" title="Purple"></span>
+                            <span class="quick-color" style="background: #EC4899;" onclick="window.DiscoverAdmin.setColor('#EC4899')" title="Pink"></span>
+                        </div>
+                    </div>
+
+                    <!-- Auto-Generate Options -->
+                    <div class="auto-generate-section">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="window.DiscoverAdmin.autoGenerateTagline()">
+                            <i class="fas fa-magic"></i> Auto-Generate Tagline
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="window.DiscoverAdmin.autoGenerateIcon()">
+                            <i class="fas fa-magic"></i> Suggest Icon
+                        </button>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-outline" onclick="window.DiscoverAdmin.closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Icon Library Modal -->
+    <div class="modal" id="iconLibraryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Choose an Icon</h3>
+                <button class="modal-close" onclick="window.DiscoverAdmin.closeIconLibrary()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="icon-search">
+                    <input type="text" id="iconSearch" placeholder="Search icons...">
+                </div>
+                <div class="icons-grid" id="iconsGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Success!</h3>
+            <p id="successMessage">Changes saved successfully</p>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="window.DiscoverAdmin.closeSuccessModal()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Custom JS -->
+    <script src="script/admin-discover.js"></script>
+</body>
+</html>

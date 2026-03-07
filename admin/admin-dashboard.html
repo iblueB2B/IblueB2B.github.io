@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - iBlue B2B</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style/admin-dashboard.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-chart-line"></i> iBlue Admin
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin-dashboard.html" class="active"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                <li><a href="admin-banners.html"><i class="fas fa-images"></i> Banners</a></li>
+                <li><a href="admin-categories.html"><i class="fas fa-sitemap"></i> Categories</a></li>
+                <li><a href="admin-spotlights.html"><i class="fas fa-star"></i> Spotlights</a></li>
+                <li><a href="admin-ads.html"><i class="fas fa-ad"></i> Ads</a></li>
+                <li><a href="admin-users.html"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="admin-reports.html"><i class="fas fa-flag"></i> Reports</a></li>
+                <li><a href="admin-message-reports.html"><i class="fas fa-star"></i> message-reports</a></li>
+                <li><a href="admin-messages.html"><i class="fas fa-star"></i> Messages</a></li>
+                <li><a href="admin-products.html"><i class="fas fa-star"></i> Products</a></li>
+                <li><a href="admin-rankings.html"><i class="fas fa-star"></i> Rankings</a></li>
+                <li><a href="admin-spotlight-pricing.html"><i class="fas fa-star"></i> Spotlight-pricing</a></li>
+                <li><a href="admin-supplier-approvals.html"><i class="fas fa-star"></i> Supplier-Approvals</a></li>
+                <li><a href="admin-templates.html"><i class="fas fa-star"></i> templates</a></li>
+                <li><a href="admin-users.html"><i class="fas fa-star"></i> Users</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Dashboard Overview</h1>
+                </div>
+                <div class="user-menu">
+                    <span class="admin-badge">Admin</span>
+                    <span id="adminName">Loading...</span>
+                    <button class="btn btn-sm btn-danger" onclick="dashboardManager.logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats cards will be populated by JavaScript -->
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <h3>Ad Performance</h3>
+                    <canvas id="adsChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>User Growth</h3>
+                    <canvas id="usersChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <div class="section-header">
+                    <h2>Recent Activity</h2>
+                    <a href="admin-reports.html" class="btn btn-sm">View All</a>
+                </div>
+                <div class="activity-table-container">
+                    <table class="activity-table" id="activityTable">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Action</th>
+                                <th>Admin</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityBody">
+                            <!-- Activity rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script/admin-dashboard.js"></script>
+</body>
+</html>
