@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Address Book - iBlue B2B</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/address-book.css">
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <div class="logo-circle">i</div>
+                <span class="logo-text">iBlue<span>B2B</span></span>
+            </a>
+            <button class="menu-btn" id="menuToggle">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>Address Book</h1>
+            <p>Manage your delivery addresses</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+            <div class="spinner"></div>
+            <p>Loading your addresses...</p>
+        </div>
+
+        <!-- Addresses List (Hidden until loaded) -->
+        <div class="addresses-content" id="addressesContent" style="display: none;">
+            <!-- Addresses Grid -->
+            <div class="addresses-grid" id="addressesGrid">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Add New Address Button -->
+            <button class="add-address-btn" id="addAddressBtn">
+                <i class="fas fa-plus"></i>
+                <span>Add New Address</span>
+            </button>
+
+            <!-- Default Info -->
+            <div class="default-info">
+                <i class="fas fa-info-circle"></i>
+                <p>The address marked as <span class="default-badge">Default</span> will be used for your orders</p>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>No addresses yet</h3>
+            <p>Add your first delivery address to get started</p>
+            <button class="btn-primary" id="emptyStateAddBtn">
+                <i class="fas fa-plus"></i> Add New Address
+            </button>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state" id="errorState" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Error Loading Addresses</h3>
+            <p>There was a problem loading your addresses</p>
+            <button class="btn-primary" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i> Try Again
+            </button>
+        </div>
+    </main>
+
+    <!-- Add/Edit Address Modal -->
+    <div class="modal" id="addressModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Address</h3>
+                <button class="modal-close" onclick="closeAddressModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addressForm">
+                    <input type="hidden" id="addressId">
+
+                    <!-- Address Name/Label -->
+                    <div class="form-group">
+                        <label>Address Label <span class="required">*</span></label>
+                        <input type="text" id="addressLabel" placeholder="e.g., Home, Office, Warehouse" required>
+                        <small>Give this address a name to easily identify it</small>
+                    </div>
+
+                    <!-- Recipient Information -->
+                    <div class="form-section">
+                        <h4>Recipient Information</h4>
+                        
+                        <div class="form-group">
+                            <label>Recipient Name <span class="required">*</span></label>
+                            <input type="text" id="recipientName" placeholder="Full name of recipient" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="recipientPhone" placeholder="+256 700 000000" required>
+                        </div>
+                    </div>
+
+                    <!-- Address Details -->
+                    <div class="form-section">
+                        <h4>Address Details</h4>
+
+                        <div class="form-group">
+                            <label>Region <span class="required">*</span></label>
+                            <select id="region" required>
+                                <option value="">Select region</option>
+                                <option value="Central">Central</option>
+                                <option value="Western">Western</option>
+                                <option value="Eastern">Eastern</option>
+                                <option value="Northern">Northern</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>District <span class="required">*</span></label>
+                                <select id="district" required>
+                                    <option value="">Select district</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>City/Town</label>
+                                <input type="text" id="city" placeholder="e.g., Kampala City">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Address Line 1 <span class="required">*</span></label>
+                            <input type="text" id="addressLine1" placeholder="Street address, P.O. Box" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Address Line 2 (Optional)</label>
+                            <input type="text" id="addressLine2" placeholder="Apartment, suite, unit, building">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Postal Code</label>
+                                <input type="text" id="postalCode" placeholder="e.g., 256">
+                            </div>
+                            <div class="form-group">
+                                <label>Landmark (Optional)</label>
+                                <input type="text" id="landmark" placeholder="Near, opposite...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Instructions -->
+                    <div class="form-section">
+                        <h4>Delivery Instructions (Optional)</h4>
+                        <div class="form-group">
+                            <textarea id="deliveryInstructions" rows="3" placeholder="Special instructions for delivery person..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Set as Default -->
+                    <div class="form-check">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="isDefault">
+                            <span>Set as default address</span>
+                        </label>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary" id="saveAddressBtn">
+                            <i class="fas fa-save"></i> Save Address
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="closeAddressModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Address</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <p class="delete-message">Are you sure you want to delete this address?</p>
+                <p class="delete-warning">This action cannot be undone.</p>
+                
+                <div class="modal-actions">
+                    <button class="btn-danger" id="confirmDeleteBtn">Delete</button>
+                    <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Success!</h3>
+            <p id="successMessage">Address saved successfully</p>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="closeSuccessModal()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="suppliers.html" class="nav-item">
+            <i class="fas fa-warehouse"></i>
+            <span>Suppliers</span>
+        </a>
+        <a href="my-inquiries.html" class="nav-item">
+            <i class="fas fa-file-invoice"></i>
+            <span>Inquiries</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Orders</span>
+        </a>
+        <a href="profile.html" class="nav-item active">
+            <i class="far fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/address-book.js"></script>
+</body>
+</html>
