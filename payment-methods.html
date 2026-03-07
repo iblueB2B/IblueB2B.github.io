@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Payment Methods - iBlue B2B</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/payment-methods.css">
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <div class="logo-circle">i</div>
+                <span class="logo-text">iBlue<span>B2B</span></span>
+            </a>
+            <button class="menu-btn" id="menuToggle">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>Payment Methods</h1>
+            <p>Manage your payment options</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+            <div class="spinner"></div>
+            <p>Loading payment methods...</p>
+        </div>
+
+        <!-- Payment Methods Content -->
+        <div class="payment-content" id="paymentContent" style="display: none;">
+            <!-- Saved Payment Methods -->
+            <div class="section-header">
+                <h3><i class="fas fa-credit-card"></i> Saved Payment Methods</h3>
+                <button class="add-btn" id="addPaymentBtn">
+                    <i class="fas fa-plus"></i> Add New
+                </button>
+            </div>
+
+            <div class="payment-methods-list" id="paymentMethodsList">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="section-header">
+                <h3><i class="fas fa-history"></i> Recent Transactions</h3>
+                <a href="transactions.html" class="view-all">View All</a>
+            </div>
+
+            <div class="transactions-list" id="transactionsList">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Payment Settings -->
+            <div class="settings-section">
+                <h3><i class="fas fa-cog"></i> Payment Settings</h3>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Default Payment Method</h4>
+                        <p>Choose which payment method to use by default</p>
+                    </div>
+                    <select id="defaultPaymentMethod" class="setting-select">
+                        <option value="">Select default method</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Auto-pay</h4>
+                        <p>Automatically pay for orders using default method</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoPay">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Payment Notifications</h4>
+                        <p>Get notified about payment status changes</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="paymentNotifications" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Payment Method Modal -->
+    <div class="modal" id="addPaymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Payment Method</h3>
+                <button class="modal-close" onclick="closeAddPaymentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Payment Method Tabs -->
+                <div class="payment-tabs">
+                    <button class="payment-tab active" data-type="mobile_money">
+                        <i class="fas fa-mobile-alt"></i> Mobile Money
+                    </button>
+                    <button class="payment-tab" data-type="bank">
+                        <i class="fas fa-university"></i> Bank Account
+                    </button>
+                    <button class="payment-tab" data-type="card">
+                        <i class="fas fa-credit-card"></i> Card
+                    </button>
+                </div>
+
+                <!-- Mobile Money Form -->
+                <form id="mobileMoneyForm" class="payment-form active">
+                    <div class="form-group">
+                        <label>Network Provider <span class="required">*</span></label>
+                        <select id="mobileNetwork" required>
+                            <option value="">Select network</option>
+                            <option value="mtn">MTN Uganda</option>
+                            <option value="airtel">Airtel Uganda</option>
+                            <option value="africell">Africell</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mobile Number <span class="required">*</span></label>
+                        <input type="tel" id="mobileNumber" placeholder="e.g., 0772 123456" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Account Name</label>
+                        <input type="text" id="mobileAccountName" placeholder="Name on account">
+                    </div>
+
+                    <div class="form-check">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="setDefaultMobile">
+                            <span>Set as default payment method</span>
+                        </label>
+                    </div>
+                </form>
+
+                <!-- Bank Account Form -->
+                <form id="bankForm" class="payment-form">
+                    <div class="form-group">
+                        <label>Bank Name <span class="required">*</span></label>
+                        <select id="bankName" required>
+                            <option value="">Select bank</option>
+                            <option value="stanbic">Stanbic Bank</option>
+                            <option value="centenary">Centenary Bank</option>
+                            <option value="dfcu">dfcu Bank</option>
+                            <option value="barclays">Barclays Bank</option>
+                            <option value="absa">ABSA Bank</option>
+                            <option value="equity">Equity Bank</option>
+                            <option value="kcb">KCB Bank</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Account Number <span class="required">*</span></label>
+                        <input type="text" id="accountNumber" placeholder="Account number" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Account Name</label>
+                            <input type="text" id="accountName" placeholder="Name on account">
+                        </div>
+                        <div class="form-group">
+                            <label>Branch</label>
+                            <input type="text" id="bankBranch" placeholder="Branch name">
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="setDefaultBank">
+                            <span>Set as default payment method</span>
+                        </label>
+                    </div>
+                </form>
+
+                <!-- Card Form -->
+                <form id="cardForm" class="payment-form">
+                    <div class="form-group">
+                        <label>Card Number <span class="required">*</span></label>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expiry Date <span class="required">*</span></label>
+                            <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>CVV <span class="required">*</span></label>
+                            <input type="password" id="cvv" placeholder="123" maxlength="3" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cardholder Name</label>
+                        <input type="text" id="cardholderName" placeholder="Name on card">
+                    </div>
+
+                    <div class="form-check">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="setDefaultCard">
+                            <span>Set as default payment method</span>
+                        </label>
+                    </div>
+
+                    <div class="card-security">
+                        <i class="fas fa-lock"></i>
+                        <span>Your card information is securely encrypted</span>
+                    </div>
+                </form>
+
+                <div class="modal-actions">
+                    <button class="btn-primary" id="savePaymentBtn">Save Payment Method</button>
+                    <button class="btn-secondary" onclick="closeAddPaymentModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Payment Method Modal -->
+    <div class="modal" id="editPaymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Payment Method</h3>
+                <button class="modal-close" onclick="closeEditPaymentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editPaymentForm">
+                    <input type="hidden" id="editPaymentId">
+                    <input type="hidden" id="editPaymentType">
+
+                    <div class="form-group">
+                        <label>Account Name</label>
+                        <input type="text" id="editAccountName" placeholder="Name on account">
+                    </div>
+
+                    <div class="form-check">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="editSetDefault">
+                            <span>Set as default payment method</span>
+                        </label>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn-primary" id="updatePaymentBtn">Update</button>
+                        <button class="btn-secondary" onclick="closeEditPaymentModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Remove Payment Method</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <p class="delete-message">Are you sure you want to remove this payment method?</p>
+                <p class="delete-warning">This action cannot be undone.</p>
+                
+                <div class="modal-actions">
+                    <button class="btn-danger" id="confirmDeleteBtn">Remove</button>
+                    <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Success!</h3>
+            <p id="successMessage">Payment method added successfully</p>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="closeSuccessModal()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="suppliers.html" class="nav-item">
+            <i class="fas fa-warehouse"></i>
+            <span>Suppliers</span>
+        </a>
+        <a href="my-inquiries.html" class="nav-item">
+            <i class="fas fa-file-invoice"></i>
+            <span>Inquiries</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Orders</span>
+        </a>
+        <a href="profile.html" class="nav-item active">
+            <i class="far fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/payment-methods.js"></script>
+</body>
+</html>
