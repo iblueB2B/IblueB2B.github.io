@@ -21,20 +21,20 @@ let tagify = null;
 // Enhanced compression profiles for cost optimization
 const compressionProfiles = {
     main: {
-        maxSizeMB: 0.5,           // Target 500KB max
-        maxWidthOrHeight: 1200,    // Max dimension
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1200,
         useWebWorker: true,
-        fileType: 'image/webp',     // WebP gives best compression
-        initialQuality: 0.8,       // 80% quality (good balance)
+        fileType: 'image/webp',
+        initialQuality: 0.8,
         alwaysKeepResolution: false,
         maxIteration: 10
     },
     gallery: {
-        maxSizeMB: 0.3,            // Target 300KB max
-        maxWidthOrHeight: 800,      // Smaller dimension for gallery
+        maxSizeMB: 0.3,
+        maxWidthOrHeight: 800,
         useWebWorker: true,
         fileType: 'image/webp',
-        initialQuality: 0.75,       // 75% quality
+        initialQuality: 0.75,
         alwaysKeepResolution: false,
         maxIteration: 10
     }
@@ -44,6 +44,7 @@ const compressionProfiles = {
 // INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('📱 Page loaded, initializing...');
     await checkAuth();
     await loadSupplierProfile();
     await loadCategories();
@@ -67,8 +68,9 @@ async function checkAuth() {
             return;
         }
         currentUser = user;
+        console.log('✅ User authenticated:', user.id);
     } catch (error) {
-        console.error('Auth error:', error);
+        console.error('❌ Auth error:', error);
         window.location.href = 'login.html';
     }
 }
@@ -83,26 +85,34 @@ async function loadSupplierProfile() {
             
         if (error) throw error;
         supplierProfile = data;
+        console.log('✅ Supplier profile loaded:', supplierProfile.id);
     } catch (error) {
-        console.error('Error loading supplier profile:', error);
+        console.error('❌ Error loading supplier profile:', error);
         showToast('Error loading supplier profile');
     }
 }
 
 // ============================================
-// FIXED LOAD CATEGORIES AND SUBCATEGORIES
+// LOAD CATEGORIES
 // ============================================
 async function loadCategories() {
     try {
+        console.log('📥 Loading categories...');
         const { data, error } = await sb
             .from('categories')
             .select('id, name, parent_id')
             .eq('is_active', true)
-            .order('name', { ascending: true });
+            .order('name');
             
         if (error) throw error;
         
-        categories = data || [];
+        categories = (data || []).map(c => ({
+            id: parseInt(c.id),
+            name: c.name,
+            parent_id: c.parent_id ? parseInt(c.parent_id) : null
+        }));
+        
+        console.log('✅ Loaded categories:', categories.length);
         
         // Populate main category dropdown
         const mainCategories = categories.filter(c => !c.parent_id);
@@ -116,51 +126,158 @@ async function loadCategories() {
             $('#productCategory').select2({
                 placeholder: 'Select category',
                 width: '100%'
+            }).on('change', function(e) {
+                // Trigger our handler when Select2 changes
+                console.log('📋 Select2 category changed to:', e.target.value);
+                loadSubcategories(e.target.value);
             });
         }
         
     } catch (error) {
-        console.error('Error loading categories:', error);
+        console.error('❌ Error loading categories:', error);
         showToast('Failed to load categories');
     }
 }
 
-// FIXED: Load subcategories when category changes
-function loadSubcategories(categoryId) {
+// ============================================
+// LOAD SUBCATEGORIES - MULTIPLE APPROACHES
+// ============================================
+async function loadSubcategories(categoryId) {
     const subcatSelect = document.getElementById('productSubcategory');
     
-    if (!categoryId || categoryId === '') {
+    console.log('🔍 Loading subcategories for category:', categoryId, 'Type:', typeof categoryId);
+    
+    if (!categoryId || categoryId === '' || categoryId === 'null' || categoryId === 'undefined') {
+        console.log('⚠️ No category selected');
         subcatSelect.innerHTML = '<option value="">Select category first</option>';
         subcatSelect.disabled = true;
         return;
     }
     
-    // Parse categoryId to number
+    // Convert to number
     const catId = parseInt(categoryId);
+    console.log('🔢 Parsed category ID:', catId, 'Type:', typeof catId);
     
-    // Filter subcategories where parent_id matches the selected category
-    const subs = categories.filter(c => c.parent_id === catId);
+    // Show loading state
+    subcatSelect.innerHTML = '<option value="">Loading subcategories...</option>';
+    subcatSelect.disabled = true;
     
-    if (subs.length === 0) {
+    try {
+        // APPROACH 1: Direct database query (most reliable)
+        console.log('📡 Querying subcategories from database for parent_id:', catId);
+        const { data: dbSubs, error: dbError } = await sb
+            .from('categories')
+            .select('id, name, parent_id')
+            .eq('parent_id', catId)
+            .eq('is_active', true)
+            .order('name');
+            
+        if (dbError) throw dbError;
+        
+        console.log('📊 Database returned:', dbSubs?.length || 0, 'subcategories');
+        
+        if (dbSubs && dbSubs.length > 0) {
+            // Use database results
+            subcatSelect.innerHTML = '<option value="">Select subcategory (optional)</option>' +
+                dbSubs.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+            subcatSelect.disabled = false;
+            console.log('✅ Populated from database with', dbSubs.length, 'subcategories');
+            
+            // Refresh Select2
+            if (typeof $ !== 'undefined' && $.fn.select2) {
+                $('#productSubcategory').select2({
+                    placeholder: 'Select subcategory (optional)',
+                    width: '100%',
+                    allowClear: true
+                });
+            }
+            return;
+        }
+        
+        // APPROACH 2: Try client-side filtering as fallback
+        console.log('⚠️ No database results, trying client-side filtering...');
+        console.log('Categories in memory:', categories.length);
+        
+        const subs = categories.filter(c => {
+            const match = c.parent_id === catId;
+            if (match) {
+                console.log('✓ Found match:', c.name, '(ID:', c.id, 'parent:', c.parent_id, ')');
+            }
+            return match;
+        });
+        
+        console.log('🔍 Client-side filtering found:', subs.length, 'subcategories');
+        
+        if (subs.length > 0) {
+            subcatSelect.innerHTML = '<option value="">Select subcategory (optional)</option>' +
+                subs.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+            subcatSelect.disabled = false;
+            console.log('✅ Populated from client cache with', subs.length, 'subcategories');
+            
+            if (typeof $ !== 'undefined' && $.fn.select2) {
+                $('#productSubcategory').select2({
+                    placeholder: 'Select subcategory (optional)',
+                    width: '100%',
+                    allowClear: true
+                });
+            }
+            return;
+        }
+        
+        // No subcategories found
+        console.log('ℹ️ No subcategories found for category', catId);
         subcatSelect.innerHTML = '<option value="">No subcategories available</option>';
         subcatSelect.disabled = true;
-        return;
-    }
-    
-    // Populate subcategories
-    subcatSelect.innerHTML = '<option value="">Select subcategory (optional)</option>' +
-        subs.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
-    subcatSelect.disabled = false;
-    
-    // Refresh Select2 if initialized
-    if (typeof $ !== 'undefined' && $.fn.select2) {
-        $('#productSubcategory').select2({
-            placeholder: 'Select subcategory (optional)',
-            width: '100%',
-            allowClear: true
-        });
+        
+    } catch (error) {
+        console.error('❌ Error in loadSubcategories:', error);
+        
+        // Fallback to client-side filtering
+        try {
+            console.log('⚠️ Attempting client-side fallback...');
+            const subs = categories.filter(c => c.parent_id === catId);
+            
+            if (subs.length > 0) {
+                subcatSelect.innerHTML = '<option value="">Select subcategory (optional)</option>' +
+                    subs.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+                subcatSelect.disabled = false;
+                console.log('✅ Fallback successful with', subs.length, 'subcategories');
+            } else {
+                subcatSelect.innerHTML = '<option value="">No subcategories available</option>';
+                subcatSelect.disabled = true;
+            }
+        } catch (fallbackError) {
+            console.error('❌ Fallback also failed:', fallbackError);
+            subcatSelect.innerHTML = '<option value="">Error loading subcategories</option>';
+            subcatSelect.disabled = true;
+        }
     }
 }
+
+// ============================================
+// DEBUG FUNCTION - Test direct database connection
+// ============================================
+async function testDatabaseConnection() {
+    console.log('🧪 Testing database connection...');
+    try {
+        const { data, error } = await sb
+            .from('categories')
+            .select('count')
+            .limit(1);
+            
+        if (error) {
+            console.error('❌ Database connection failed:', error);
+            showToast('Database connection error', 'error');
+        } else {
+            console.log('✅ Database connection successful');
+        }
+    } catch (e) {
+        console.error('❌ Database test failed:', e);
+    }
+}
+
+// Call test on load
+setTimeout(testDatabaseConnection, 2000);
 
 // ============================================
 // TAGS INPUT
@@ -228,9 +345,23 @@ window.removeBulkTier = function(tierId) {
 // SETUP EVENT LISTENERS
 // ============================================
 function setupEventListeners() {
-    // Category change - FIXED: Now properly calls loadSubcategories
-    document.getElementById('productCategory')?.addEventListener('change', function(e) {
-        loadSubcategories(e.target.value);
+    console.log('🔧 Setting up event listeners');
+    
+    // Category change - Direct DOM event
+    const categorySelect = document.getElementById('productCategory');
+    if (categorySelect) {
+        categorySelect.addEventListener('change', function(e) {
+            console.log('📋 DOM category changed to:', e.target.value);
+            loadSubcategories(e.target.value);
+        });
+        console.log('✅ Added change listener to category select');
+    } else {
+        console.error('❌ Category select element not found');
+    }
+    
+    // Also add a click listener for debugging
+    categorySelect?.addEventListener('click', function() {
+        console.log('👆 Category select clicked, current value:', this.value);
     });
     
     // Step navigation
@@ -805,6 +936,7 @@ function renderReview() {
                 <div class="review-images">
                     <div class="review-image">
                         <img src="${URL.createObjectURL(mainImageFile)}" alt="Main">
+                        <span class="image-size-badge">${(mainImageFile.size / 1024).toFixed(0)}KB</span>
                     </div>
                 </div>
             </div>
@@ -815,6 +947,7 @@ function renderReview() {
                     ${galleryImages.slice(0, 3).map(file => `
                         <div class="review-image">
                             <img src="${URL.createObjectURL(file)}" alt="Gallery">
+                            <span class="image-size-badge">${(file.size / 1024).toFixed(0)}KB</span>
                         </div>
                     `).join('')}
                     ${galleryImages.length > 3 ? `<div class="review-image">+${galleryImages.length - 3}</div>` : ''}
@@ -942,7 +1075,7 @@ async function saveBulkPricingTiers(productId) {
 }
 
 // ============================================
-// SUBMIT PRODUCT (FIXED VERSION)
+// SUBMIT PRODUCT
 // ============================================
 async function submitProduct() {
     const terms = document.getElementById('acceptTerms').checked;
@@ -968,7 +1101,7 @@ async function submitProduct() {
             tags = tagify.value.map(t => t.value);
         }
         
-        // Collect all form data - includes all columns we added
+        // Collect all form data
         const productData = {
             title: title,
             slug: slug,
@@ -999,6 +1132,8 @@ async function submitProduct() {
             updated_at: new Date().toISOString()
         };
         
+        console.log('📦 Submitting product:', productData);
+        
         // Insert product
         const { data, error } = await sb
             .from('ads')
@@ -1007,6 +1142,8 @@ async function submitProduct() {
             .single();
             
         if (error) throw error;
+        
+        console.log('✅ Product created:', data);
         
         // Save bulk pricing tiers if any
         if (document.querySelectorAll('.bulk-tier').length > 0) {
@@ -1018,7 +1155,7 @@ async function submitProduct() {
         document.getElementById('successModal').classList.add('show');
         
     } catch (error) {
-        console.error('Error submitting product:', error);
+        console.error('❌ Error submitting product:', error);
         showLoading(false);
         showToast(error.message || 'Failed to submit product', 'error');
     }
