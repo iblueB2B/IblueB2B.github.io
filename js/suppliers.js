@@ -362,7 +362,7 @@ const SuppliersPage = {
                             <span>(${supplier.total_orders || 0})</span>
                         </div>
                         <div class="hot-supplier-products">
-                            ${supplier.products.slice(0, 3).map(p => `
+                            ${(supplier.products || []).slice(0, 3).map(p => `
                                 <div class="hot-product-thumb">
                                     <img src="${p.image_urls?.[0] || 'https://via.placeholder.com/30'}" alt="">
                                 </div>
@@ -439,7 +439,7 @@ const SuppliersPage = {
                     <!-- Products Row - 3 items -->
                     <div class="supplier-products-compact">
                         <div class="products-row-compact">
-                            ${supplier.products.map(p => `
+                            ${(supplier.products || []).map(p => `
                                 <a href="product.html?id=${p.id}" class="product-item-compact" onclick="event.stopPropagation()">
                                     <div class="product-image-compact">
                                         <img src="${p.image_urls?.[0] || 'https://via.placeholder.com/100'}" alt="">
@@ -480,6 +480,37 @@ const SuppliersPage = {
     },
     
     // ============================================
+    // APPLY SEARCH - Redirect to results page
+    // ============================================
+    applySearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value.trim();
+        
+        if (searchTerm) {
+            // Redirect to results page with search query
+            window.location.href = `supplier-results.html?q=${encodeURIComponent(searchTerm)}`;
+        } else {
+            // If empty search, stay on current page but you could reload
+            this.loadSuppliers(true);
+        }
+        
+        // Hide search bar
+        document.getElementById('searchBar').classList.remove('show');
+    },
+    
+    // ============================================
+    // TOGGLE SEARCH - Show/hide search bar
+    // ============================================
+    toggleSearch() {
+        const searchBar = document.getElementById('searchBar');
+        searchBar.classList.toggle('show');
+        
+        if (searchBar.classList.contains('show')) {
+            document.getElementById('searchInput').focus();
+        }
+    },
+    
+    // ============================================
     // FILTERING
     // ============================================
     applyFilters() {
@@ -490,13 +521,6 @@ const SuppliersPage = {
         this.filters.sort = sort;
         
         this.loadSuppliers(true);
-    },
-    
-    applySearch() {
-        const searchInput = document.getElementById('searchInput');
-        this.filters.search = searchInput.value;
-        this.loadSuppliers(true);
-        document.getElementById('searchBar').classList.remove('show');
     },
     
     resetFilters() {
@@ -524,16 +548,6 @@ const SuppliersPage = {
         this.loadSuppliers(false).then(() => {
             this.renderSuppliers();
         });
-    },
-    
-    // ============================================
-    // UI CONTROLS
-    // ============================================
-    toggleSearch() {
-        document.getElementById('searchBar').classList.toggle('show');
-        if (document.getElementById('searchBar').classList.contains('show')) {
-            document.getElementById('searchInput').focus();
-        }
     },
     
     // ============================================
@@ -600,7 +614,7 @@ const SuppliersPage = {
             document.getElementById('searchBar').classList.remove('show');
         });
         
-        // Search input
+        // Search input - handle Enter key
         document.getElementById('searchInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.applySearch();
