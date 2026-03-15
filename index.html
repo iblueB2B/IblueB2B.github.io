@@ -52,10 +52,16 @@
         <h2 class="section-title">Quick Actions</h2>
         <div class="swiper quick-actions-swiper">
             <div class="swiper-wrapper" id="quickActionsWrapper">
-                <!-- Populated by JS -->
+                <!-- Loaded from database -->
             </div>
         </div>
     </div>
+
+    <!-- Login/Signup Banner (Dynamic - shows only when not logged in) -->
+    <div id="authPromptContainer"></div>
+
+    <!-- Recommendations Container (for logged in users) -->
+    <div id="recommendationsContainer"></div>
 
     <!-- Featured Deals Carousel -->
     <div class="featured-deals-section">
@@ -65,7 +71,7 @@
         </div>
         <div class="swiper deals-swiper">
             <div class="swiper-wrapper" id="featuredDealsWrapper">
-                <!-- Populated by JS -->
+                <!-- Loaded from database -->
             </div>
         </div>
     </div>
@@ -78,7 +84,7 @@
         </div>
         <div class="swiper categories-swiper">
             <div class="swiper-wrapper" id="categoriesWrapper">
-                <!-- Populated by JS -->
+                <!-- Loaded from database -->
             </div>
         </div>
     </div>
@@ -91,7 +97,20 @@
         </div>
         <div class="swiper suppliers-swiper">
             <div class="swiper-wrapper" id="hotSuppliersWrapper">
-                <!-- Populated by JS -->
+                <!-- Loaded from database -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Just Added / Recent Items Carousel -->
+    <div class="recent-items-section">
+        <div class="section-header">
+            <h2 class="section-title">Just Added</h2>
+            <a href="new-arrivals.html" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="swiper recent-swiper">
+            <div class="swiper-wrapper" id="recentItemsWrapper">
+                <!-- Loaded from database -->
             </div>
         </div>
     </div>
@@ -100,27 +119,37 @@
     <div id="categoryProductSections"></div>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </a>
-        <a href="suppliers.html" class="nav-item">
-            <i class="fas fa-warehouse"></i>
-            <span>Suppliers</span>
-        </a>
-        <a href="chat.html" class="nav-item">
-            <i class="fas fa-comment"></i>
-            <span>Messenger</span>
-        </a>
-        <a href="profile.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>My iBlue</span>
-        </a>
-    </nav>
+   <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="suppliers.html" class="nav-item">
+        <i class="fas fa-warehouse"></i>
+        <span>Suppliers</span>
+    </a>
+    <a href="help.html" class="nav-item">
+        <i class="fas fa-question-circle"></i>
+        <span>Help</span>
+    </a>
+    <a href="logistics-directory.html" class="nav-item">
+        <i class="fas fa-truck"></i>
+        <span>Logistics</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>My iBlue</span>
+    </a>
+</nav>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p id="loadingMessage">Loading...</p>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
