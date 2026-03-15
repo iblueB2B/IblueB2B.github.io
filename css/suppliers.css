@@ -401,6 +401,7 @@ body {
     box-shadow: var(--shadow);
     transition: all 0.2s;
     padding: 12px;
+    cursor: pointer;
 }
 
 .supplier-card:active {
